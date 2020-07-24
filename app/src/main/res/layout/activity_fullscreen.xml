@@ -563,6 +563,20 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
                 <Button
+                    android:id="@+id/data_0"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DATA0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <Button
                     android:id="@+id/data_1"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="match_parent"
@@ -707,7 +721,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
             </LinearLayout>
@@ -728,10 +742,10 @@
 
         <LinearLayout
             android:id="@+id/fullscreen_side"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             style="?metaButtonBarStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:gravity="left"
             android:background="@color/colorDarkTP"
@@ -742,16 +756,48 @@
                 android:orientation="horizontal"
                 style="?metaButtonBarStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="40dp">
 
                 <Button
-                    android:visibility="gone"
                     android:id="@+id/setData_led"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="LED" />
+
+                <Button
+                    android:id="@+id/load_frame_data"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="FR" />
+
+                <Button
+                    android:id="@+id/set_test_start"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="T_START" />
+
+                <Button
+                    android:id="@+id/set_test_reset"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="T_RESET" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                style="?metaButtonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp">
+
 
                 <Button
                     android:id="@+id/load_register_1"

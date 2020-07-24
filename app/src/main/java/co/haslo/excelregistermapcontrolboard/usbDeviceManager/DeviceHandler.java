@@ -1,5 +1,6 @@
 package co.haslo.excelregistermapcontrolboard.usbDeviceManager;
 
+import android.annotation.SuppressLint;
 import android.hardware.usb.UsbDevice;
 import android.icu.text.SimpleDateFormat;
 import android.os.Handler;
@@ -145,7 +146,7 @@ public class DeviceHandler extends Handler {
      * Device Data RESET & START ;
      */
 
-    public void resetData() {
+    public void reset() {
         Dlog.i("Reset Data");
         if(mDeviceCommunicator != null) {
             //mDeviceCommunicator.DataTransferReset();
@@ -214,13 +215,22 @@ public class DeviceHandler extends Handler {
         }
     }
 
+    public void registerHandlerViewInputControl() {
+        Dlog.i("registerHandlerViewInputControl");
+        registerView(DeviceDataTransfer.bufferArrayMulti);
+    }
 
 
+
+    @SuppressLint("DefaultLocale")
     public void registerView(byte[] bufferArray) {
 
         Dlog.i("TotalSize = " + bufferArray.length);
         String convertString;
-        for(int i = 0, counter = 1; i < 4096*4; i+=4, counter++) {
+        int bulkCounter = 0;
+        int frameCounter = 0;
+        boolean frameCounterTreiger = false;
+        for(int i = 0, counter = 0; i < bufferArray.length; i+=4, counter++) {
             //Dlog.d("defaultBulkCounter : " + defaultBulkCounter);
             byte Data03 = bufferArray[i + 3];
             byte Data02 = bufferArray[i + 2];
@@ -229,109 +239,75 @@ public class DeviceHandler extends Handler {
             byte[] DataArray = {Data03,Data02,Data01,Data00};
             convertString = ConvertDataType.byteArrayToHexString(DataArray);
 
-            Dlog.i("RX["+ counter +"] - "+ convertString);
+
+            //Dlog.i("RX["+ counter +"] - "+ convertString);
+
+            if(counter % 32768 == 0) {
+                frameCounter++;
+            }
+            if(counter % 4096 == 0 ){
+                bulkCounter++;
+                Dlog.i(String.format("START[%d / %d / %d]-%s",counter, bulkCounter, frameCounter, convertString));
+            }
+            if(counter % 4096 == 4095 ){
+                Dlog.i(String.format("FINAL[%d / %d / %d]-%s",counter, bulkCounter, frameCounter, convertString));
+            }
 
             //Dlog.i(convertString);
 
         }
     }
 
-
+    public void registerHandlerLoad_frameData() {
+        Dlog.i("Frame Data Loaded");
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("FeedBackTEST.xls",0));
+    }
     public void registerHandlerLoad_1() {
         Dlog.i("Load 1");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad(0));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("REV_ExcelRegisterMap.xls",0));
     }
 
     public void registerHandlerLoad_2() {
         Dlog.i("Load 2");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad(1));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("REV_ExcelRegisterMap.xls",1));
     }
 
     public void registerHandlerLoad_3() {
         Dlog.i("Load 3");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad(2));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("REV_ExcelRegisterMap.xls",2));
     }
 
     public void registerHandlerLoad_4() {
         Dlog.i("Load B_Coef");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad_B_coef(2));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("Tx_BF_B_delay_coef",2));
     }
 
     public void registerHandlerStart() {
         Dlog.i("START");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad(3));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("REV_ExcelRegisterMap.xls",3));
     }
 
     public void registerHandlerStop() {
         Dlog.i("STOP");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad(4));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("REV_ExcelRegisterMap.xls",4));
     }
 
-    public ArrayList<String> registerLoad(int selectNumber) {
+    public ArrayList<String> registerLoad(String SheetName,int selectNumber) {
         ArrayList<String> dataSaveArrayList = new ArrayList<>();
 
         try {
 //            InputStream is = appCompatActivity.getApplicationContext().getAssets().open("ExcelRegisterMap.xls");
-            InputStream is = appCompatActivity.getApplicationContext().getAssets().open("REV_ExcelRegisterMap.xls");
+//            InputStream is = appCompatActivity.getApplicationContext().getAssets().open("REV_ExcelRegisterMap.xls");
+//            InputStream is = appCompatActivity.getApplicationContext().getAssets().open("Tx_BF_B_delay_coef.xls");
+            InputStream is = appCompatActivity.getApplicationContext().getAssets().open(SheetName);
             Workbook wb = Workbook.getWorkbook(is);
 
             if(wb != null) {
-                Dlog.d("RegisterMap Init");
+                Dlog.d("RegisterMap Init : " + SheetName);
                 Sheet sheet = wb.getSheet(selectNumber);   // 시트 불러오기
                 if(sheet != null) {
                     int colIndexStart = 1;
                     int colTotal = sheet.getColumns();
-                    int rowIndexStart = 1;                  // row 인덱스 시작
-                    int rowTotal = sheet.getColumn(colTotal-1).length;
-
-                    ArrayList<String> arrayList = new ArrayList<>();
-                    StringBuilder sb;
-
-                    for(int col = colIndexStart; col < colTotal; col++) {
-
-                        sb = new StringBuilder();
-
-                        for(int row = rowIndexStart; row < rowTotal; row++) {
-
-                            String contents = sheet.getCell(col, row).getContents();
-                            arrayList.add(contents);
-                            if(row == rowTotal-1) {
-                                sb.append("row"+row+" : "+contents);
-                            } else {
-                                sb.append("row"+row+" : "+contents+" , ");
-                            }
-                            Dlog.i(col+","+row+" = "+contents);
-
-                            //ADD Reigster
-                            dataSaveArrayList.add(contents);
-                        }
-
-                    }
-                    Dlog.i("Total = "+ arrayList.size());
-                }
-            }
-        } catch (IOException | BiffException e) {
-            e.printStackTrace();
-            Log.e("error", e.toString());
-        }
-
-        return dataSaveArrayList;
-
-    }
-
-    public ArrayList<String> registerLoad_B_coef(int selectNumber) {
-        ArrayList<String> dataSaveArrayList = new ArrayList<>();
-
-        try {
-//            InputStream is = appCompatActivity.getApplicationContext().getAssets().open("ExcelRegisterMap.xls");
-            InputStream is = appCompatActivity.getApplicationContext().getAssets().open("Tx_BF_B_delay_coef.xls");
-            Workbook wb = Workbook.getWorkbook(is);
-
-            if(wb != null) {
-                Sheet sheet = wb.getSheet(selectNumber);   // 시트 불러오기
-                if(sheet != null) {
-                    int colIndexStart = 1;
-                    int colTotal = sheet.getColumns();    // 전체 컬럼
                     int rowIndexStart = 1;                  // row 인덱스 시작
                     int rowTotal = sheet.getColumn(colTotal-1).length;
 

@@ -80,7 +80,7 @@ public class DeviceRegisterSetting {
 
     public static void reset(DeviceCommunicator device)
     {
-        String[] sendStringArray =  {"80090000","98000000","980A0000"};
+        String[] sendStringArray =  {"80090000","98000000", "98010000"};
         int[] sendIntArray = hexStringArrayToInt32bit8HexArray(sendStringArray);
         for(int ints : sendIntArray){
             Dlog.d(String.format("0x%04X", ints));
@@ -99,7 +99,7 @@ public class DeviceRegisterSetting {
     {                               /*98000003,980A0001*/
         String[] sendStringArray =  {"98000003"};
         int[] sendIntArray = hexStringArrayToInt32bit8HexArray(sendStringArray);
-        for(int ints : sendIntArray){
+        for(int ints : sendIntArray) {
             Dlog.d(String.format("0x%04X", ints));
         }
         try {

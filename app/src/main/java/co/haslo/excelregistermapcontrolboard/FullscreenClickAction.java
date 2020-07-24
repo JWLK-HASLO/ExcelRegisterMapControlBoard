@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceDataTransfer;
 import co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceHandler;
 import co.haslo.excelregistermapcontrolboard.util.Dlog;
 import co.haslo.excelregistermapcontrolboard.util.InterfaceUtil;
@@ -43,6 +44,9 @@ public class FullscreenClickAction {
 
         /*Center*/
         setData_led();
+        t_start();
+        t_reset();
+        loadFrameData();
         loadData_1_register_all();
         loadData_2_register_all();
         loadData_3_register_all();
@@ -54,6 +58,7 @@ public class FullscreenClickAction {
 
 
         /*Right*/
+        viewData_0_register_all();
         viewData_1_register_all();
         viewData_2_register_all();
         viewData_3_register_all();
@@ -127,6 +132,44 @@ public class FullscreenClickAction {
             public void onClick(View view) {
                 showToast(appCompatActivity,"setData_ledon Button Click");
                 mDeviceHandler.registerHandlerLED();
+            }
+        });
+    }
+
+    private void t_start() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.set_test_start);
+        mButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeviceDataTransfer.defaultBulkCounter = 0;
+                DeviceDataTransfer.ReadBulkStartTrigger = true;
+                showToast(appCompatActivity,"Test Start Button Click");
+                mDeviceHandler.run();
+            }
+        });
+    }
+
+    private void t_reset() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.set_test_reset);
+        mButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeviceDataTransfer.defaultBulkCounter = 0;
+                DeviceDataTransfer.ReadBulkStartTrigger = false;
+                showToast(appCompatActivity,"Test Reset Button Click");
+                mDeviceHandler.reset();
+            }
+        });
+    }
+
+    private void loadFrameData() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.load_frame_data);
+        mButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeviceDataTransfer.ReadBulkStartTrigger = false;
+                showToast(appCompatActivity,"load Multiple Frame Data Button Click");
+                mDeviceHandler.registerHandlerLoad_frameData();
             }
         });
     }
@@ -207,6 +250,17 @@ public class FullscreenClickAction {
     /**
      * RIGHT Button
      */
+
+    private void viewData_0_register_all() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.data_0);
+        mButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showToast(appCompatActivity,"viewData_1_register_all Button Click");
+                mDeviceHandler.registerHandlerViewInputControl();
+            }
+        });
+    }
 
     private void viewData_1_register_all() {
         Button mButton = (Button) appCompatActivity.findViewById(R.id.data_1);
