@@ -1,32 +1,274 @@
 package co.haslo.excelregistermapcontrolboard;
 
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 
+import co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceHandler;
 import co.haslo.excelregistermapcontrolboard.util.Dlog;
+
+import static co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceDataTransfer.bufferArrayMulti;
 
 public class FullscreenImaging {
     private AppCompatActivity appCompatActivity;
+
+    public static int[] arrayIntData = new int[1024*32];
+    TextView timerView;
+    Button scanControlImaging;
+    Button timerControlButton;
+    Button timerClearButton;
+    Button wideViewButton;
+
+    Thread timeThread = null;
+    Boolean isRunning = true;
+
+    ImageView bitmapImage;
+    Bitmap bmp;
+    Boolean wideViewTrigger = false;
+
+    int colorAccent;
+    int colorWhite;
+    int colorWhiteDark;
+    int colorPrimary;
+    int colorVioletR;
+    int viewData = 0;
+
 
     FullscreenImaging(AppCompatActivity appCompatActivity) {
         this.appCompatActivity = appCompatActivity;
     }
 
     void initialize() {
-        Dlog.d("Ready");
+        Dlog.d("Image Activity Ready");
+        getColorMaker();
         loadDataImaging();
+        setXmlComponent();
+        setButtonControl();
+    }
+
+    void getColorMaker() {
+        colorAccent = ContextCompat.getColor(appCompatActivity, R.color.colorAccent);
+        colorWhite = ContextCompat.getColor(appCompatActivity, R.color.colorWhite);
+        colorWhiteDark = ContextCompat.getColor(appCompatActivity, R.color.colorWhiteDark);
+        colorPrimary = ContextCompat.getColor(appCompatActivity, R.color.colorPrimary);
+        colorVioletR = ContextCompat.getColor(appCompatActivity, R.color.colorVioletR);
+    }
+
+    void setXmlComponent() {
+        timerView = appCompatActivity.findViewById(R.id.timer_view);
+        scanControlImaging = appCompatActivity.findViewById(R.id.button_scan_imaging);
+        timerControlButton = appCompatActivity.findViewById(R.id.button_timer_control);
+        timerClearButton = appCompatActivity.findViewById(R.id.button_timer_clear);
+        wideViewButton = appCompatActivity.findViewById(R.id.button_wide_view);
+        bitmapImage = appCompatActivity.findViewById(R.id.data_image);
     }
 
     private void loadDataImaging() {
-        ImageView mImage = appCompatActivity.findViewById(R.id.data_image);
-        Glide.with(appCompatActivity)
-                .load(R.raw.echo01)
-                .fitCenter()
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .into(mImage);
+        bmp = Bitmap.createBitmap(32, 1024, Bitmap.Config.ARGB_8888);
+
+    }
+
+    void setButtonControl() {
+        scanControlImaging.setOnClickListener(new Button.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+
+                bmp = Bitmap.createBitmap(32, 1024, Bitmap.Config.ARGB_8888);
+
+                if(!isRunning) isRunning = true;
+                timeThread = new Thread(new timeThread());
+                timeThread.start();
+                scanControlImaging.setEnabled(false);
+                scanControlImaging.setTextColor(colorWhiteDark);
+                scanControlImaging.setBackgroundColor(colorPrimary);
+                timerControlButton.setText("PAUSE");
+                timerControlButton.setEnabled(true);
+                timerControlButton.setTextColor(colorWhite);
+                timerClearButton.setEnabled(true);
+                timerClearButton.setTextColor(colorWhite);
+
+                wideViewButton.setEnabled(true);
+                wideViewButton.setTextColor(colorWhite);
+
+            }
+        });
+
+        timerControlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRunning = !isRunning;
+                if (isRunning) {
+                    timerControlButton.setText("PAUSE");
+                } else {
+                    timerControlButton.setText("START");
+                }
+            }
+        });
+
+        timerClearButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                bitmapImage.setImageBitmap(null);
+
+                scanControlImaging.setEnabled(true);
+                scanControlImaging.setTextColor(colorWhite);
+                scanControlImaging.setTextColor(colorVioletR);
+                timerControlButton.setEnabled(false);
+                timerControlButton.setTextColor(colorWhiteDark);
+                timerClearButton.setEnabled(false);
+                timerClearButton.setTextColor(colorWhiteDark);
+                timeThread.interrupt();
+                timerView.setText("");
+                timerView.setText("00:00:00:0");
+
+
+                wideViewButton.setEnabled(false);
+                wideViewButton.setTextColor(colorWhiteDark);
+            }
+        });
+
+        wideViewButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                if(!wideViewTrigger){
+                    wideViewButton.setText("NOW : Wide View");
+                    wideViewTrigger = true;
+                } else {
+                    wideViewButton.setText("NOW : Original View");
+                    wideViewTrigger = false;
+                }
+            }
+        });
+    }
+
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int mSec = msg.arg1 % 10;
+            int sec = (msg.arg1 / 10) % 60;
+            int min = (msg.arg1 / 10) / 60;
+            int hour = (msg.arg1 / 10) / 360;
+            //1초 세기
+//            int sec = msg.arg1 % 60;
+//            int min = (msg.arg1/60) % 60;
+//            int hour = (msg.arg1) / 3600;
+            //1000이 1초 1000*60 은 1분 1000*60*10은 10분 1000*60*60은 한시간
+
+//            @SuppressLint("DefaultLocale") final String result = String.format("%02d:%02d:%02d", hour, min, sec);
+            @SuppressLint("DefaultLocale") final String result = String.format("%02d:%02d:%02d:%01d", hour, min, sec, mSec);
+//            if (result.equals("00:01:15:00")) {
+//                Toast.makeText(FullscreenActivity.this, "1분 15초가 지났습니다.", Toast.LENGTH_SHORT).show();
+//            }
+
+            appCompatActivity.runOnUiThread(new Runnable(){
+                @Override
+                public void run() {
+                    timerView.setText(result);
+                    Bitmap newBitmap = bmp;
+                    if(wideViewTrigger){
+                        bitmapImage.setImageBitmap(getResizedBitmap(newBitmap,640,480));
+                    } else {
+                        bitmapImage.setImageBitmap(newBitmap);
+                    }
+                }
+            });
+        }
+    };
+
+    public class timeThread implements Runnable {
+        @Override
+        public void run() {
+            int i = 0;
+            while (true) {
+                while (isRunning) { //일시정지를 누르면 멈춤
+                    Message msg = new Message();
+                    msg.arg1 = i++;
+                    handler.sendMessage(msg);
+                    setBitmapData(arrayIntData);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        appCompatActivity.runOnUiThread(new Runnable(){
+                            @Override
+                            public void run() {
+                                Toast.makeText(appCompatActivity, "NEW TIMER HAS BEEN LAUNCHED", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return; // 인터럽트 받을 경우 return
+                    }
+                }
+            }
+        }
+    }
+
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+//        bm.recycle();
+        return resizedBitmap;
+    }
+
+
+    void setBitmapData(int[] data) {
+        int col = 32;
+        int row = 1024;
+        int dataNumber = 0;
+        int dataInfo = 0;
+
+        for(int x = 0; x < col; x++){
+            for(int y = 0; y < row; y++){
+                dataNumber = (1024 * x) + y;
+                dataInfo = data[dataNumber];
+                //Need to filter Function 
+                // dataInfo = echoFilter(data[dataNumber]);
+                bmp.setPixel(x, y, packRGB(dataInfo, dataInfo, dataInfo) );
+            }
+        }
+
+//        for(int x = 0; x < col; x++){
+//            for(int y = 0; y < row; y++){
+//                bmp.setPixel(x, y, packRGB(7*x, viewData, viewData));
+//            }
+//        }
+//
+//        if(viewData>255){
+//            viewData = 0;
+//        } else {
+//            viewData++;
+//        }
+
+    }
+
+    private static int packRGB(int r, int g, int b) {
+        return 0xff000000 | r << 16 | g << 8 | b;
     }
 
 }

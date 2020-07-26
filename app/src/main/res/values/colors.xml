@@ -18,4 +18,9 @@
 
     <color name="nomalColor">#ffcd54</color>
     <color name="cursorColor">#ffb65d</color>
+
+    <color name="colorVioletHL">#9F66D9</color>
+    <color name="colorVioletL">#854AD9</color>
+    <color name="colorVioletR">#4E0FA6</color>
+    <color name="colorVioletB">#320B59</color>
 </resources>

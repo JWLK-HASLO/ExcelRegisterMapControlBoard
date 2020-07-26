@@ -36,16 +36,18 @@
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:padding="5dp">
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="MODE"
-                        android:textColor="@color/colorAccent"
+                        android:background="@color/colorVioletB"
+                        android:textColor="@color/colorWhite"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:paddingVertical="5dp"
+                        android:paddingHorizontal="10dp"/>
 
                     <RadioGroup
                         android:id="@+id/mode_group"
@@ -86,16 +88,18 @@
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:padding="5dp">
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Channel"
-                        android:textColor="@color/colorAccent"
+                        android:background="@color/colorVioletB"
+                        android:textColor="@color/colorWhite"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:paddingVertical="5dp"
+                        android:paddingHorizontal="10dp"/>
 
                     <RadioGroup
                         android:id="@+id/channel_group"
@@ -139,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="View Depth"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/colorWhite"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -166,7 +170,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="cm"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -182,16 +186,18 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2.3"
-                android:padding="5dp">
+                android:layout_weight="2.3">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tx Parameter Setting"
-                    android:textColor="@color/colorAccent"
+                    android:background="@color/colorVioletB"
+                    android:textColor="@color/colorWhite"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="10dp"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -204,7 +210,7 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:text="PRF"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -226,7 +232,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="MHz"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -243,7 +249,7 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:text="Center Frequency"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -265,7 +271,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="MHz"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -282,7 +288,7 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:text="Pulse Cycle "
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -304,7 +310,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="times"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -321,7 +327,7 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:text="Focusing Point"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -343,7 +349,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="cm"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -360,7 +366,7 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:text="Dynamic Range"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -382,7 +388,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="db"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -404,9 +410,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tx Voltage"
-                    android:textColor="@color/colorAccent"
+                    android:background="@color/colorVioletB"
+                    android:textColor="@color/colorWhite"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="10dp"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -431,7 +440,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="V"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
                         android:textSize="10sp"/>
 
@@ -459,17 +468,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="18dp">
 
             <!-- Image Wrapper -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2">
+                android:layout_weight="3"
+                android:background="@color/colorSubDark">
 
                 <ImageView
-                    android:visibility="gone"
                     android:id="@+id/data_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -482,8 +491,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary">
+                android:layout_weight="1">
 
 
 
@@ -494,7 +502,6 @@
                     android:layout_weight="3">
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/log_box_text"
                         android:scrollbars = "vertical"
                         android:layout_width="match_parent"
@@ -521,6 +528,8 @@
                         style="?metaButtonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@color/colorWhite"
                         android:layout_weight="1"
                         android:text="CLEAR" />
 
@@ -530,6 +539,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@color/colorWhite"
                         android:text="TOP" />
 
                     <Button
@@ -538,7 +549,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="BTM" />
+                        android:text="BTM"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@color/colorWhite" />
 
                 </LinearLayout>
 
@@ -555,177 +568,100 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             tools:ignore="NestedWeights"
+            android:gravity="center_vertical"
             android:layout_marginTop="20dp">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp">
+
                 <Button
-                    android:id="@+id/data_0"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:id="@+id/button_scan_imaging"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="DATA0" />
+                    android:background="@color/colorVioletR"
+                    android:text="SCANNING START"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14dp"
+                    android:enabled="true"/>
+
             </LinearLayout>
+
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_1"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA1" />
-                <Button
-                    android:id="@+id/data_2"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA2" />
-            </LinearLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TIMER : "
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp"/>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_3"
-                    style="?metaButtonBarButtonStyle"
+                <TextView
+                    android:id="@+id/timer_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA3" />
-                <Button
-                    android:id="@+id/data_4"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA4" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:text="00:00:00:0"
+                    android:textColor="@color/colorVioletHL"
+                    android:textSize="18sp"/>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_5"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA5" />
-                <Button
-                    android:id="@+id/data_6"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA6" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_7"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA7" />
-                <Button
-                    android:id="@+id/data_8"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA8" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_9"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA9" />
-                <Button
-                    android:id="@+id/data_10"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA10" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_11"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA11" />
-                <Button
-                    android:id="@+id/data_12"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA12" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/data_13"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA13" />
-                <Button
-                    android:id="@+id/data_14"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="DATA14" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_marginVertical="10dp">
+
+                <Button
+                    android:id="@+id/button_timer_control"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="START"
+                    android:textColor="@color/colorWhiteDark"
+                    android:textSize="14sp"
+                    android:enabled="false"/>
+
+                <Button
+                    android:id="@+id/button_timer_clear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="CLEAR"
+                    android:textColor="@color/colorWhiteDark"
+                    android:textSize="14sp"
+                    android:enabled="false"/>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp">
+
+                <Button
+                    android:id="@+id/button_wide_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="NOW : Original View"
+                    android:textColor="@color/colorWhiteDark"
+                    android:textSize="14dp"
+                    android:enabled="false"/>
+
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -749,7 +685,8 @@
             android:layout_gravity="center|bottom"
             android:gravity="left"
             android:background="@color/colorDarkTP"
-            android:layout_marginBottom="200dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="100dp"
             tools:ignore="UselessParent">
 
             <LinearLayout
@@ -764,7 +701,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="LED" />
+                    android:text="LED"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/load_frame_data"
@@ -772,7 +710,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="FR" />
+                    android:text="FR"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/set_test_start"
@@ -780,7 +719,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="T_START" />
+                    android:text="T_START"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/set_test_reset"
@@ -788,7 +728,16 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="T_RESET" />
+                    android:text="T_RESET"
+                    android:textColor="@color/colorVioletHL" />
+                <Button
+                    android:id="@+id/screenSizeView"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textColor="@color/colorVioletHL" />
 
             </LinearLayout>
 
@@ -805,7 +754,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="L1" />
+                    android:text="L1"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/load_register_2"
@@ -813,7 +763,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="L2" />
+                    android:text="L2"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/load_register_3"
@@ -821,7 +772,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="L3" />
+                    android:text="L3"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/load_register_4"
@@ -829,7 +781,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="L4" />
+                    android:text="L4"
+                    android:textColor="@color/colorVioletHL" />
 
 
                 <Button
@@ -838,7 +791,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="START" />
+                    android:text="START"
+                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/stop_register"
@@ -846,7 +800,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="STOP" />
+                    android:text="STOP"
+                    android:textColor="@color/colorVioletHL" />
 
 
             </LinearLayout>
@@ -871,7 +826,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:text="Register MAP" />
+                android:text="Register MAP"
+                android:textColor="@color/colorWhite"/>
 
             <Button
                 android:id="@+id/dummy_button"
@@ -879,7 +835,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="HIDE" />
+                android:text="HIDE"
+                android:textColor="@color/colorWhite" />
 
         </LinearLayout>
     </FrameLayout>

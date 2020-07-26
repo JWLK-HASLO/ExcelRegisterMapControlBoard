@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
 
+import co.haslo.excelregistermapcontrolboard.FullscreenImaging;
 import co.haslo.excelregistermapcontrolboard.util.Dlog;
 
 public class DeviceDataTransfer {
@@ -87,9 +88,10 @@ public class DeviceDataTransfer {
                         System.arraycopy(readBuffer,0, bufferArrayMulti, arrayStartCounter*readSize, defaultBITDataSize);
                     }
 
-
                     if(defaultBulkCounter == BULK_OF_FRAME){
                         defaultFrameCounter++;
+                        defaultBulkCounter = 0;
+                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
                     }
                     defaultBulkCounter++;
                 }
