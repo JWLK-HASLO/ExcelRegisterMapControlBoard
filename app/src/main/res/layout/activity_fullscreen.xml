@@ -502,6 +502,7 @@
                     android:layout_weight="3">
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/log_box_text"
                         android:scrollbars = "vertical"
                         android:layout_width="match_parent"
@@ -656,7 +657,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorPrimary"
-                    android:text="NOW : Original View"
+                    android:text="NOW : Wide View"
                     android:textColor="@color/colorWhiteDark"
                     android:textSize="14dp"
                     android:enabled="false"/>
@@ -730,13 +731,14 @@
                     android:layout_weight="1"
                     android:text="T_RESET"
                     android:textColor="@color/colorVioletHL" />
+
                 <Button
-                    android:id="@+id/screenSizeView"
+                    android:id="@+id/set_test_log"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text=""
+                    android:text="T_LOG"
                     android:textColor="@color/colorVioletHL" />
 
             </LinearLayout>

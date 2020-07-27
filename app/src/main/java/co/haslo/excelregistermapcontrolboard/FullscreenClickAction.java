@@ -44,9 +44,10 @@ public class FullscreenClickAction {
 
         /*Center*/
         setData_led();
+        loadFrameData();
         t_start();
         t_reset();
-        loadFrameData();
+        t_log();
         loadData_1_register_all();
         loadData_2_register_all();
         loadData_3_register_all();
@@ -121,12 +122,26 @@ public class FullscreenClickAction {
         });
     }
 
+
+    private void loadFrameData() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.load_frame_data);
+        mButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeviceDataTransfer.ReadBulkStartTrigger = false;
+                showToast(appCompatActivity,"load Multiple Frame Data Button Click");
+                mDeviceHandler.registerHandlerLoad_frameData();
+            }
+        });
+    }
+
     private void t_start() {
         Button mButton = (Button) appCompatActivity.findViewById(R.id.set_test_start);
         mButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DeviceDataTransfer.defaultBulkCounter = 0;
+                DeviceDataTransfer.defaultFrameCounter = 0;
                 DeviceDataTransfer.ReadBulkStartTrigger = true;
                 showToast(appCompatActivity,"Test Start Button Click");
                 mDeviceHandler.run();
@@ -140,6 +155,7 @@ public class FullscreenClickAction {
             @Override
             public void onClick(View view) {
                 DeviceDataTransfer.defaultBulkCounter = 0;
+                DeviceDataTransfer.defaultFrameCounter = 0;
                 DeviceDataTransfer.ReadBulkStartTrigger = false;
                 showToast(appCompatActivity,"Test Reset Button Click");
                 mDeviceHandler.reset();
@@ -147,14 +163,13 @@ public class FullscreenClickAction {
         });
     }
 
-    private void loadFrameData() {
-        Button mButton = (Button) appCompatActivity.findViewById(R.id.load_frame_data);
+    private void t_log() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.set_test_log);
         mButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DeviceDataTransfer.ReadBulkStartTrigger = false;
-                showToast(appCompatActivity,"load Multiple Frame Data Button Click");
-                mDeviceHandler.registerHandlerLoad_frameData();
+                showToast(appCompatActivity,"Test Log Button Click");
+                mDeviceHandler.registerHandlerViewInputControl();
             }
         });
     }

@@ -32,7 +32,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mFullscreenController = new FullscreenController(this);
         mFullscreenClickAction = new FullscreenClickAction(this, mDeviceHandler);
         mFullscreenLogBox = new FullscreenLogBox(this);
-        mFullscreenImaging = new FullscreenImaging(this);
+        mFullscreenImaging = new FullscreenImaging(this, mDeviceHandler);
 
         mDeviceHandler.initialize();
         mFullscreenClickAction.initialize();

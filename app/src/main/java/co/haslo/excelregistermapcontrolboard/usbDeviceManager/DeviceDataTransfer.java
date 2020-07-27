@@ -12,14 +12,15 @@ public class DeviceDataTransfer {
 
     public static final int SEQUENCE_DATA_SIZE = 4096; // Byte => 1BULK = 4096 BYTE = 16384 BIT
     public static final int BYTE = 4;
+    public static final int BUNDLE = 1;
     public static final int BULK_OF_FRAME = 8;
-    public static final int FRAME_SIZE = 2;
+    public static final int FRAME_NUMBER = 1;
 
     public static Boolean ReadBulkStartTrigger = false;
-    private static final int defaultBITDataSize = SEQUENCE_DATA_SIZE * BYTE; // 16,384 BIT
-    private static final int defaultMultiFrameDataSize = defaultBITDataSize * BULK_OF_FRAME * FRAME_SIZE; //
+    private static final int defaultBITDataSize = SEQUENCE_DATA_SIZE * BYTE * BUNDLE; // 16,384 BIT
+    private static final int defaultMultiFrameDataSize = defaultBITDataSize * BULK_OF_FRAME * FRAME_NUMBER; //
     public static int defaultBulkCounter = 0;
-    public static int defaultFrameCounter = 1;
+    public static int defaultFrameCounter = 0;
 
 
     private static DeviceDataTransfer mDataTransferInstance = null;
@@ -84,16 +85,36 @@ public class DeviceDataTransfer {
 
                     int arrayStartCounter = (defaultBulkCounter - 1);
                     if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
-                        Dlog.i(String.format("Trigger data : %d", arrayStartCounter*readSize));
                         System.arraycopy(readBuffer,0, bufferArrayMulti, arrayStartCounter*readSize, defaultBITDataSize);
                     }
 
-                    if(defaultBulkCounter == BULK_OF_FRAME){
+                    if(defaultBulkCounter % BULK_OF_FRAME == 0){
                         defaultFrameCounter++;
                         defaultBulkCounter = 0;
                         FullscreenImaging.arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
                     }
                     defaultBulkCounter++;
+
+
+
+//                    int arrayStartCounter = (defaultBulkCounter - 1);
+//                    if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
+//                        Dlog.i(String.format("Trigger data : %d", arrayStartCounter*readSize));
+//                        System.arraycopy(readBuffer,0, bufferArrayMulti, arrayStartCounter*readSize, defaultBITDataSize);
+//                        Dlog.i(String.format("End data : %d", bufferArrayMulti.length));
+//                    }
+//
+//                    if(defaultBulkCounter % BULK_OF_FRAME == 0){
+//                        defaultFrameCounter++;
+////                        defaultBulkCounter = 0;
+//                    }
+//
+//                    if(defaultFrameCounter > FRAME_NUMBER ){
+//                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
+//                        Dlog.i(String.format("registerConvert : %d", FullscreenImaging.arrayIntData.length));
+//                        defaultFrameCounter = 1;
+//                    }
+//                    defaultBulkCounter++;
                 }
 
             }

@@ -21,6 +21,8 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
+import static co.haslo.excelregistermapcontrolboard.util.ConvertDataType.byteArrayToInt;
+
 public class DeviceHandler extends Handler {
 
     private AppCompatActivity appCompatActivity;
@@ -257,6 +259,7 @@ public class DeviceHandler extends Handler {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     public static int[] registerConvert(byte[] bufferArray) {
         Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
         String convertString;
@@ -269,8 +272,9 @@ public class DeviceHandler extends Handler {
             byte Data01 = bufferArray[i + 1];
             byte Data00 = bufferArray[i + 0];
             byte[] DataArray = {Data03,Data02,Data01,Data00};
-            convertString = ConvertDataType.byteArrayToHexString(DataArray);
-            convertIntArray[counter] = Integer.parseInt( convertString, 16 );
+
+            convertIntArray[counter] = byteArrayToInt(DataArray);
+//            Dlog.i(String.format("arrayCouning Number : %d / converData %d ", counter, convertIntArray[counter]));
         }
         return convertIntArray;
     }

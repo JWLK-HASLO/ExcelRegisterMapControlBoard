@@ -16,27 +16,33 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 
+import co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceDataTransfer;
 import co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceHandler;
 import co.haslo.excelregistermapcontrolboard.util.Dlog;
 
 import static co.haslo.excelregistermapcontrolboard.usbDeviceManager.DeviceDataTransfer.bufferArrayMulti;
+import static co.haslo.excelregistermapcontrolboard.util.InterfaceUtil.showToast;
 
 public class FullscreenImaging {
     private AppCompatActivity appCompatActivity;
-
-    public static int[] arrayIntData = new int[1024*32];
+    DeviceHandler mDeviceHandler ;
+    static int frameSize = 1024*32;
+    static int frameNumber = 1;
+    public static int[] arrayIntData = new int[frameSize * frameNumber];
     TextView timerView;
     Button scanControlImaging;
     Button timerControlButton;
     Button timerClearButton;
     Button wideViewButton;
 
+    public static Boolean frameImagingTrigger = false;
     Thread timeThread = null;
     Boolean isRunning = true;
 
     ImageView bitmapImage;
     Bitmap bmp;
-    Boolean wideViewTrigger = false;
+    Boolean wideViewTrigger = true;
+    Boolean setLoadTrigger = false;
 
     int colorAccent;
     int colorWhite;
@@ -46,8 +52,10 @@ public class FullscreenImaging {
     int viewData = 0;
 
 
-    FullscreenImaging(AppCompatActivity appCompatActivity) {
+
+    FullscreenImaging(AppCompatActivity appCompatActivity, DeviceHandler deviceHandler) {
         this.appCompatActivity = appCompatActivity;
+        mDeviceHandler = deviceHandler;
     }
 
     void initialize() {
@@ -103,6 +111,13 @@ public class FullscreenImaging {
                 wideViewButton.setEnabled(true);
                 wideViewButton.setTextColor(colorWhite);
 
+
+                /*Register Test Start CMD */
+                DeviceDataTransfer.defaultBulkCounter = 0;
+                DeviceDataTransfer.ReadBulkStartTrigger = true;
+                showToast(appCompatActivity,"Test Start Button Click");
+                mDeviceHandler.run();
+
             }
         });
 
@@ -126,18 +141,26 @@ public class FullscreenImaging {
 
                 scanControlImaging.setEnabled(true);
                 scanControlImaging.setTextColor(colorWhite);
-                scanControlImaging.setTextColor(colorVioletR);
+                scanControlImaging.setBackgroundColor(colorVioletR);
                 timerControlButton.setEnabled(false);
                 timerControlButton.setTextColor(colorWhiteDark);
                 timerClearButton.setEnabled(false);
                 timerClearButton.setTextColor(colorWhiteDark);
                 timeThread.interrupt();
-                timerView.setText("");
                 timerView.setText("00:00:00:0");
 
 
                 wideViewButton.setEnabled(false);
                 wideViewButton.setTextColor(colorWhiteDark);
+
+                arrayIntData = new int[1024*32];
+
+                /*Register Test Clear*/
+                DeviceDataTransfer.defaultBulkCounter = 0;
+                DeviceDataTransfer.defaultFrameCounter = 0;
+                DeviceDataTransfer.ReadBulkStartTrigger = false;
+                showToast(appCompatActivity,"Test Reset Button Click");
+                mDeviceHandler.reset();
             }
         });
 
@@ -164,6 +187,7 @@ public class FullscreenImaging {
             int sec = (msg.arg1 / 10) % 60;
             int min = (msg.arg1 / 10) / 60;
             int hour = (msg.arg1 / 10) / 360;
+            final int frameCounter = msg.arg2;
             //1초 세기
 //            int sec = msg.arg1 % 60;
 //            int min = (msg.arg1/60) % 60;
@@ -180,11 +204,14 @@ public class FullscreenImaging {
                 @Override
                 public void run() {
                     timerView.setText(result);
-                    Bitmap newBitmap = bmp;
-                    if(wideViewTrigger){
-                        bitmapImage.setImageBitmap(getResizedBitmap(newBitmap,640,480));
-                    } else {
-                        bitmapImage.setImageBitmap(newBitmap);
+//                    bitmapImage.setImageBitmap(null);
+                    setBitmapData(arrayIntData, frameCounter % frameNumber);
+                    if(wideViewTrigger && setLoadTrigger){
+                        bitmapImage.setImageBitmap(getResizedBitmap(bmp,640,480));
+                        setLoadTrigger = false;
+                    } else if (!wideViewTrigger && setLoadTrigger) {
+                        bitmapImage.setImageBitmap(bmp);
+                        setLoadTrigger = false;
                     }
                 }
             });
@@ -195,14 +222,17 @@ public class FullscreenImaging {
         @Override
         public void run() {
             int i = 0;
+            int frameCounter = 0;
             while (true) {
                 while (isRunning) { //일시정지를 누르면 멈춤
                     Message msg = new Message();
                     msg.arg1 = i++;
+//                    msg.arg2 = frameCounter++;
+                    msg.arg2 = 0;
                     handler.sendMessage(msg);
-                    setBitmapData(arrayIntData);
+                    //arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(16);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         appCompatActivity.runOnUiThread(new Runnable(){
@@ -237,7 +267,7 @@ public class FullscreenImaging {
     }
 
 
-    void setBitmapData(int[] data) {
+    void setBitmapData(int[] data, int frameCounter) {
         int col = 32;
         int row = 1024;
         int dataNumber = 0;
@@ -245,17 +275,18 @@ public class FullscreenImaging {
 
         for(int x = 0; x < col; x++){
             for(int y = 0; y < row; y++){
-                dataNumber = (1024 * x) + y;
+                dataNumber = (32768*frameCounter) + (1024 * x) + y;
                 dataInfo = data[dataNumber];
-                //Need to filter Function 
+                //Need to filter Function
                 // dataInfo = echoFilter(data[dataNumber]);
                 bmp.setPixel(x, y, packRGB(dataInfo, dataInfo, dataInfo) );
             }
         }
+        setLoadTrigger = true;
 
 //        for(int x = 0; x < col; x++){
 //            for(int y = 0; y < row; y++){
-//                bmp.setPixel(x, y, packRGB(7*x, viewData, viewData));
+//                bmp.setPixel(x, y, packRGB(frameCounter*x*y, frameCounter*x*y, frameCounter+x*y));
 //            }
 //        }
 //
