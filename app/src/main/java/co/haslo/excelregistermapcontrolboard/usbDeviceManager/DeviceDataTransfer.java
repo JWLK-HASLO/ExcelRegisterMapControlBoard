@@ -91,7 +91,8 @@ public class DeviceDataTransfer {
                     if(defaultBulkCounter % BULK_OF_FRAME == 0){
                         defaultFrameCounter++;
                         defaultBulkCounter = 0;
-                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
+//                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertINT(bufferArrayMulti);
+                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertImaging(bufferArrayMulti);
                     }
                     defaultBulkCounter++;
 

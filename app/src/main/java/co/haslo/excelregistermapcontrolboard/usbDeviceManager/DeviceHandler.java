@@ -260,7 +260,7 @@ public class DeviceHandler extends Handler {
     }
 
     @SuppressLint("DefaultLocale")
-    public static int[] registerConvert(byte[] bufferArray) {
+    public static int[] registerConvertINT(byte[] bufferArray) {
         Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
         String convertString;
         int[] convertIntArray = new int[bufferArray.length/4];
@@ -277,6 +277,72 @@ public class DeviceHandler extends Handler {
 //            Dlog.i(String.format("arrayCouning Number : %d / converData %d ", counter, convertIntArray[counter]));
         }
         return convertIntArray;
+    }
+
+    public static int[] registerConvertImaging(byte[] bufferArray) {
+        Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
+        String convertString;
+        double data_i[] = new double[bufferArray.length/4];
+        double data_q[] = new double[bufferArray.length/4];
+        double convert_i[] = new double[bufferArray.length/4];
+        double convert_q[] = new double[bufferArray.length/4];
+        int bit_width = 16;
+        int dynamic_range = 60;
+
+        int[] convertIntArray = new int[bufferArray.length/4];
+        double[] convertMagArray = new double[bufferArray.length/4];
+        double[] convertLogArray = new double[bufferArray.length/4];
+        int[] convertFinalArray = new int[bufferArray.length/4];
+        double maxDataMag = 0.0;
+        double maxDataLog = 0.0;
+
+        for(int i = 0, counter = 0; i < bufferArray.length; i+=4, counter++) {
+            //Dlog.d("defaultBulkCounter : " + defaultBulkCounter);
+            byte Data03 = bufferArray[i + 3];
+            byte Data02 = bufferArray[i + 2];
+            byte Data01 = bufferArray[i + 1];
+            byte Data00 = bufferArray[i + 0];
+            byte[] DataArray = {Data03,Data02,Data01,Data00};
+            convertIntArray[counter] = byteArrayToInt(DataArray);
+
+            data_i[counter] = Math.floor(convertIntArray[counter]/Math.pow(2,16)); // I = floor(result_mj/2^16);
+            data_q[counter]  = convertIntArray[counter] - (data_i[counter]  * Math.pow(2, 16)); // Q = result_mj-I*2^16;
+
+            convert_i[counter] = data_i[counter] >= Math.pow( 2, bit_width-1) ? ( data_i[counter] - Math.pow(2, bit_width) ) : data_i[counter];
+            convert_q[counter] = data_q[counter] >= Math.pow( 2, bit_width-1) ? ( data_q[counter] - Math.pow(2, bit_width) ) : data_i[counter];
+
+            convertMagArray[counter] = Math.sqrt( Math.pow(convert_i[counter] , 2) + Math.pow(convert_q[counter] , 2) );
+
+        }
+        maxDataMag = getMaxData(convertMagArray);
+
+        for (int i = 0; i < bufferArray.length/4; i++) {
+            double magMaxData = convertMagArray[i] / maxDataMag;
+            double magLogData = 20*Math.log10(magMaxData) + dynamic_range;
+            double findHighLow = (magLogData >= 0 ) ? magLogData : 0;
+            convertLogArray[i] = findHighLow;
+        }
+
+        maxDataLog = getMaxData(convertLogArray);
+
+        for (int i  = 0; i < bufferArray.length/4; i++) {
+            double logMaxData = convertLogArray[i] / maxDataLog * 255;
+            convertFinalArray[i] = (int)logMaxData;
+
+            //Dlog.i(String.format("arrayCouning Number : %d / converData %d ", i, convertFinalArray[i]));
+        }
+
+        return convertFinalArray;
+    }
+
+    public static double getMaxData(double[] dataArray) {
+        double max = 0;
+        for(int i = 0; i < dataArray.length; i++){
+            if(dataArray[i] > max) {
+                max = dataArray[i];
+            }
+        }
+        return max;
     }
 
     public void registerHandlerLoad_frameData() {
@@ -300,7 +366,7 @@ public class DeviceHandler extends Handler {
 
     public void registerHandlerLoad_4() {
         Dlog.i("Load B_Coef");
-        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("Tx_BF_B_delay_coef",2));
+        DeviceRegisterSetting.sendRegisterButton(mDeviceCommunicator,registerLoad("Tx_BF_B_delay_coef.xls",2));
     }
 
     public void registerHandlerStart() {

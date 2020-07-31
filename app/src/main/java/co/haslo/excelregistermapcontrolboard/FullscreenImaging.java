@@ -116,7 +116,8 @@ public class FullscreenImaging {
                 DeviceDataTransfer.defaultBulkCounter = 0;
                 DeviceDataTransfer.ReadBulkStartTrigger = true;
                 showToast(appCompatActivity,"Test Start Button Click");
-                mDeviceHandler.run();
+                //mDeviceHandler.run();
+                mDeviceHandler.registerHandlerStart();
 
             }
         });
@@ -232,7 +233,7 @@ public class FullscreenImaging {
                     handler.sendMessage(msg);
                     //arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
                     try {
-                        Thread.sleep(16);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         appCompatActivity.runOnUiThread(new Runnable(){
