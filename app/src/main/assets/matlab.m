@@ -21,7 +21,7 @@ I_1 = ( I >= 2^(bit_width_1-1)  ).*(I-2^bit_width_1) + (I < 2^(bit_width_1-1) ).
 Q_1 = (Q >= 2^(bit_width_1-1)).*(Q-2^bit_width_1) + (Q<2^(bit_width_1-1)).*(Q);
 
 mag_vhdl = sqrt(I_1.^2+Q_1.^2);
-mag_vhdl = reshape(mag_vhdl,1024,32);     
+mag_vhdl = reshape(mag_vhdl,1024,32);
 
 dynamic_range = 60;
 mag_vhdl = mag_vhdl/max( mag_vhdl(:) );
