@@ -116,7 +116,7 @@ public class FullscreenImaging {
                 DeviceDataTransfer.defaultBulkCounter = 0;
                 DeviceDataTransfer.ReadBulkStartTrigger = true;
                 showToast(appCompatActivity,"Test Start Button Click");
-                //mDeviceHandler.run();
+//                mDeviceHandler.run();
                 mDeviceHandler.registerHandlerStart();
 
             }
@@ -233,7 +233,7 @@ public class FullscreenImaging {
                     handler.sendMessage(msg);
                     //arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(33);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         appCompatActivity.runOnUiThread(new Runnable(){
@@ -253,16 +253,19 @@ public class FullscreenImaging {
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
+
         float scaleWidth = ((float) newWidth) / width;
         float scaleHeight = ((float) newHeight) / height;
         // CREATE A MATRIX FOR THE MANIPULATION
+
         Matrix matrix = new Matrix();
         // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
+//        matrix.postScale(scaleWidth, scaleHeight);
+        matrix.postScale(480/4/32f, 480/1024f); // 32*1024
 
         // "RECREATE" THE NEW BITMAP
         Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
+                bm, 0, 0, width, height, matrix, true);
 //        bm.recycle();
         return resizedBitmap;
     }

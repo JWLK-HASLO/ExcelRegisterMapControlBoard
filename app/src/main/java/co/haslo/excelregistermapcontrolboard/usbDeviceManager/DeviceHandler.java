@@ -295,6 +295,7 @@ public class DeviceHandler extends Handler {
         int[] convertFinalArray = new int[bufferArray.length/4];
         double maxDataMag = 0.0;
         double maxDataLog = 0.0;
+        double maxVal = Math.pow(2, 15);
 
         for(int i = 0, counter = 0; i < bufferArray.length; i+=4, counter++) {
             //Dlog.d("defaultBulkCounter : " + defaultBulkCounter);
@@ -308,29 +309,37 @@ public class DeviceHandler extends Handler {
             data_i[counter] = Math.floor(convertIntArray[counter]/Math.pow(2,16)); // I = floor(result_mj/2^16);
             data_q[counter]  = convertIntArray[counter] - (data_i[counter]  * Math.pow(2, 16)); // Q = result_mj-I*2^16;
 
-            convert_i[counter] = data_i[counter] >= Math.pow( 2, bit_width-1) ? ( data_i[counter] - Math.pow(2, bit_width) ) : data_i[counter];
-            convert_q[counter] = data_q[counter] >= Math.pow( 2, bit_width-1) ? ( data_q[counter] - Math.pow(2, bit_width) ) : data_i[counter];
+            convert_i[counter] = ( data_i[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_i[counter] - Math.pow(2, bit_width) ) : data_i[counter];
+            convert_q[counter] = ( data_q[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_q[counter] - Math.pow(2, bit_width) ) : data_i[counter];
 
             convertMagArray[counter] = Math.sqrt( Math.pow(convert_i[counter] , 2) + Math.pow(convert_q[counter] , 2) );
+//            convertMagArray[counter] = Math.pow(convert_i[counter] , 2) + Math.pow(convert_q[counter] , 2);
+            double findHighLow = (20*Math.log10(convertMagArray[counter]/maxVal) + dynamic_range);
+            //findHighLow = Math.max(findHighLow, 0);
+            convertFinalArray[counter] = (int) Math.max(findHighLow, 0)*255;
 
         }
         maxDataMag = getMaxData(convertMagArray);
+        Dlog.d("convertMagArray:" + maxDataMag);//2^
+        Dlog.d("convertFinalArray:" + getMaxDataINT(convertFinalArray)) ;//2^17
 
-        for (int i = 0; i < bufferArray.length/4; i++) {
-            double magMaxData = convertMagArray[i] / maxDataMag;
-            double magLogData = 20*Math.log10(magMaxData) + dynamic_range;
-            double findHighLow = (magLogData >= 0 ) ? magLogData : 0;
-            convertLogArray[i] = findHighLow;
-        }
-
-        maxDataLog = getMaxData(convertLogArray);
-
-        for (int i  = 0; i < bufferArray.length/4; i++) {
-            double logMaxData = convertLogArray[i] / maxDataLog * 255;
-            convertFinalArray[i] = (int)logMaxData;
-
-            //Dlog.i(String.format("arrayCouning Number : %d / converData %d ", i, convertFinalArray[i]));
-        }
+//        maxDataMag = getMaxData(convertMagArray);
+//
+//        for (int i = 0; i < bufferArray.length/4; i++) {
+//            double magMaxData = convertMagArray[i] / maxDataMag;
+//            double magLogData = 20*Math.log10(magMaxData) + dynamic_range;
+//            double findHighLow = (magLogData >= 0 ) ? magLogData : 0;
+//            convertLogArray[i] = findHighLow;
+//        }
+//
+//        maxDataLog = getMaxData(convertLogArray);
+//
+//        for (int i  = 0; i < bufferArray.length/4; i++) {
+//            double logMaxData = convertLogArray[i] / maxDataLog * 255;
+//            convertFinalArray[i] = (int)logMaxData;
+//
+//            //Dlog.i(String.format("arrayCouning Number : %d / converData %d ", i, convertFinalArray[i]));
+//        }
 
         return convertFinalArray;
     }
@@ -344,6 +353,16 @@ public class DeviceHandler extends Handler {
         }
         return max;
     }
+    public static int getMaxDataINT(int[] dataArray) {
+        int max = 0;
+        for(int i = 0; i < dataArray.length; i++){
+            if(dataArray[i] > max) {
+                max = dataArray[i];
+            }
+        }
+        return max;
+    }
+
 
     public void registerHandlerLoad_frameData() {
         Dlog.i("Frame Data Loaded");

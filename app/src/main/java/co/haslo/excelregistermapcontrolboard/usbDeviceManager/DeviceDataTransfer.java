@@ -81,7 +81,7 @@ public class DeviceDataTransfer {
                     continue;
                 } else {
 
-                    Dlog.i(String.format("DeviceDataTransferThread : readSize [%d] / BulkCounter [%d} / FrameCounter [%d]", readSize, defaultBulkCounter, defaultFrameCounter));
+//                    Dlog.i(String.format("DeviceDataTransferThread : readSize [%d] / BulkCounter [%d} / FrameCounter [%d]", readSize, defaultBulkCounter, defaultFrameCounter));
 
                     int arrayStartCounter = (defaultBulkCounter - 1);
                     if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
@@ -89,6 +89,8 @@ public class DeviceDataTransfer {
                     }
 
                     if(defaultBulkCounter % BULK_OF_FRAME == 0){
+                        Dlog.i(String.format("DeviceDataTransferThread : FrameCounter [%d]", defaultFrameCounter));
+
                         defaultFrameCounter++;
                         defaultBulkCounter = 0;
 //                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertINT(bufferArrayMulti);
