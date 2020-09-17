@@ -29,6 +29,8 @@ public class FullscreenImaging {
     static int frameSize = 1024*32;
     static int frameNumber = 1;
     public static int[] arrayIntData = new int[frameSize * frameNumber];
+    public static int[] arraySaveData = new int[frameSize * frameNumber];
+    public static String[] arraySaveBuffer = new String[4096*8];
     TextView timerView;
     Button scanControlImaging;
     Button timerControlButton;
@@ -129,6 +131,8 @@ public class FullscreenImaging {
                 if (isRunning) {
                     timerControlButton.setText("PAUSE");
                 } else {
+                    arraySaveData = arrayIntData;
+//                    arraySaveBuffer = convertStringArray;
                     timerControlButton.setText("START");
                 }
             }

@@ -54,6 +54,7 @@ public class FullscreenClickAction {
         loadData_4_register_all();
         startData_register_all();
         stopData_register_all();
+        printData_register_all();
 
         /*Left*/
 
@@ -240,6 +241,25 @@ public class FullscreenClickAction {
                 showToast(appCompatActivity,"stopData_register_all Button Click");
 
                 mDeviceHandler.registerHandlerStop();
+            }
+        });
+    }
+
+    private void printData_register_all() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.print_register);
+        mButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showToast(appCompatActivity,"printData_register_all Button Click");
+
+                Dlog.d("Data-START");
+//                for(int i = 0; i < FullscreenImaging.arraySaveData.length; i++){
+//                    Dlog.d("@"+FullscreenImaging.arraySaveData[i]);
+//                }
+                for(int i = 0; i < FullscreenImaging.arraySaveBuffer.length; i++){
+                    Dlog.d("@ "+FullscreenImaging.arraySaveBuffer[i]);
+                }
+                Dlog.d("Data-END");
             }
         });
     }

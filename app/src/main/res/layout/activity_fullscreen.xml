@@ -806,6 +806,15 @@
                     android:text="STOP"
                     android:textColor="@color/colorVioletHL" />
 
+                <Button
+                    android:id="@+id/print_register"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="PRINT"
+                    android:textColor="@color/colorVioletHL" />
+
 
             </LinearLayout>
 

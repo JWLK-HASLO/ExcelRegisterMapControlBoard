@@ -21,6 +21,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
+import static co.haslo.excelregistermapcontrolboard.util.ConvertDataType.byteArrayToHexString;
 import static co.haslo.excelregistermapcontrolboard.util.ConvertDataType.byteArrayToInt;
 
 public class DeviceHandler extends Handler {
@@ -238,7 +239,7 @@ public class DeviceHandler extends Handler {
             byte Data01 = bufferArray[i + 1];
             byte Data00 = bufferArray[i + 0];
             byte[] DataArray = {Data03,Data02,Data01,Data00};
-            convertString = ConvertDataType.byteArrayToHexString(DataArray);
+            convertString = byteArrayToHexString(DataArray);
 
 
             //Dlog.i("RX["+ counter +"] - "+ convertString);
@@ -298,10 +299,9 @@ public class DeviceHandler extends Handler {
 //
 //        }
 //    }
-
+//    static public String[] convertStringArray = new String[4096*8];
     public static int[] registerConvertImaging(byte[] bufferArray) {
         Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
-        String convertString;
         double data_i[] = new double[bufferArray.length/4];
         double data_q[] = new double[bufferArray.length/4];
         double convert_i[] = new double[bufferArray.length/4];
@@ -325,6 +325,7 @@ public class DeviceHandler extends Handler {
             byte Data00 = bufferArray[i + 0];
             byte[] DataArray = {Data03,Data02,Data01,Data00};
             convertIntArray[counter] = byteArrayToInt(DataArray);
+//            convertStringArray[counter] = byteArrayToHexString(DataArray);
 
             data_i[counter] = Math.floor(convertIntArray[counter]/Math.pow(2,16)); // I = floor(result_mj/2^16);
             data_q[counter]  = convertIntArray[counter] - (data_i[counter]  * Math.pow(2, 16)); // Q = result_mj-I*2^16;
