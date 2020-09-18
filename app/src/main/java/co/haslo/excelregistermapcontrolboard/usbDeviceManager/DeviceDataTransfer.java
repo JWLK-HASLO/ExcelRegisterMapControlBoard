@@ -6,9 +6,11 @@ import android.annotation.SuppressLint;
 import java.util.ArrayList;
 
 import co.haslo.excelregistermapcontrolboard.FullscreenImaging;
+import co.haslo.excelregistermapcontrolboard.NativeProcessing.NativeWrapper;
 import co.haslo.excelregistermapcontrolboard.util.Dlog;
 
 public class DeviceDataTransfer {
+    NativeWrapper nativeApi;
 
     public static final int SEQUENCE_DATA_SIZE = 4096; // Byte => 1BULK = 4096 BYTE = 16384 BIT
     public static final int BYTE = 4;
@@ -94,6 +96,7 @@ public class DeviceDataTransfer {
                         defaultFrameCounter++;
                         defaultBulkCounter = 0;
 //                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertINT(bufferArrayMulti);
+                        //FullscreenImaging.arrayIntData = DeviceHandler.registerConvertImaging(bufferArrayMulti);
                         FullscreenImaging.arrayIntData = DeviceHandler.registerConvertImaging(bufferArrayMulti);
                     }
                     defaultBulkCounter++;
