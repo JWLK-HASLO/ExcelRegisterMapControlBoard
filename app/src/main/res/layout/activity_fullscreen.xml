@@ -30,7 +30,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1.3">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -60,11 +60,11 @@
                             android:text="B-mode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:checked="true"
                             android:textColor="@color/colorWhite"
                             android:buttonTint="@color/colorWhite"/>
 
                         <RadioButton
+                            android:checked="true"
                             android:id="@+id/mode_d"
                             android:text="D-mode"
                             android:layout_width="match_parent"
@@ -109,7 +109,7 @@
 
                         <RadioButton
                             android:id="@+id/channel_1"
-                            android:text="B-mode"
+                            android:text="CH 1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:checked="true"
@@ -118,7 +118,7 @@
 
                         <RadioButton
                             android:id="@+id/channel_2"
-                            android:text="D-mode"
+                            android:text="CH 2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorWhite"
@@ -136,7 +136,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.7"
+                android:layout_weight="0.5"
                 android:padding="5dp">
 
                 <TextView
@@ -687,7 +687,7 @@
             android:gravity="left"
             android:background="@color/colorDarkTP"
             android:layout_marginBottom="50dp"
-            android:layout_marginRight="100dp"
+            android:layout_marginRight="90dp"
             tools:ignore="UselessParent">
 
             <LinearLayout
@@ -714,14 +714,6 @@
                     android:text="FR"
                     android:textColor="@color/colorVioletHL" />
 
-                <Button
-                    android:id="@+id/set_test_start"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="T_START"
-                    android:textColor="@color/colorVioletHL" />
 
                 <Button
                     android:id="@+id/set_test_reset"
@@ -733,13 +725,23 @@
                     android:textColor="@color/colorVioletHL" />
 
                 <Button
-                    android:id="@+id/set_test_log"
+                    android:id="@+id/set_test_set"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="T_LOG"
+                    android:text="T_SET"
                     android:textColor="@color/colorVioletHL" />
+
+                <Button
+                    android:id="@+id/set_test_start"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="T_START"
+                    android:textColor="@color/colorVioletHL" />
+
 
             </LinearLayout>
 

@@ -23,6 +23,62 @@ JNIEXPORT jintArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativePro
 JNIEXPORT jintArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeImaging
   (JNIEnv *, jobject, jbyteArray);
 
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeDoppler
+ * Signature: ([B)[I
+ */
+JNIEXPORT jintArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeDoppler
+  (JNIEnv *, jobject, jbyteArray);
+
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeConvertIQ
+ * Signature: ([B)[[D
+ */
+JNIEXPORT jobjectArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeConvertIQ
+  (JNIEnv *, jobject, jbyteArray);
+
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeIIRFilter
+ * Signature: ([D)[D
+ */
+JNIEXPORT jdoubleArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeIIRFilter
+  (JNIEnv *, jobject, jdoubleArray);
+
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeFFT
+ * Signature: (II[D[D)[[D
+ */
+JNIEXPORT jobjectArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeFFT
+  (JNIEnv *, jobject, jint, jint, jdoubleArray, jdoubleArray);
+
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeFFTMagni
+ * Signature: ([D[D[D[DI)[D
+ */
+JNIEXPORT jdoubleArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeFFTMagni
+  (JNIEnv *, jobject, jdoubleArray, jdoubleArray, jdoubleArray, jdoubleArray, jint);
+
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeMagShift
+ * Signature: ([DI)[D
+ */
+JNIEXPORT jdoubleArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeMagShift
+  (JNIEnv *, jobject, jdoubleArray, jint);
+
+/*
+ * Class:     co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper
+ * Method:    nativeDopplerImaging
+ * Signature: ([D)[I
+ */
+JNIEXPORT jintArray JNICALL Java_co_haslo_excelregistermapcontrolboard_NativeProcessing_NativeWrapper_nativeDopplerImaging
+  (JNIEnv *, jobject, jdoubleArray);
+
 #ifdef __cplusplus
 }
 #endif

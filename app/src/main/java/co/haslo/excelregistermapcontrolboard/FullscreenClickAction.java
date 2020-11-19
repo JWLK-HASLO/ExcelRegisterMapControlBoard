@@ -47,7 +47,7 @@ public class FullscreenClickAction {
         loadFrameData();
         t_start();
         t_reset();
-        t_log();
+        t_set();
         loadData_1_register_all();
         loadData_2_register_all();
         loadData_3_register_all();
@@ -143,7 +143,7 @@ public class FullscreenClickAction {
             public void onClick(View view) {
                 DeviceDataTransfer.defaultBulkCounter = 0;
                 DeviceDataTransfer.defaultFrameCounter = 0;
-                DeviceDataTransfer.ReadBulkStartTrigger = true;
+                //DeviceDataTransfer.ReadBulkStartTrigger = true;
                 showToast(appCompatActivity,"Test Start Button Click");
                 mDeviceHandler.run();
             }
@@ -164,13 +164,14 @@ public class FullscreenClickAction {
         });
     }
 
-    private void t_log() {
-        Button mButton = (Button) appCompatActivity.findViewById(R.id.set_test_log);
+    private void t_set() {
+        Button mButton = (Button) appCompatActivity.findViewById(R.id.set_test_set);
         mButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showToast(appCompatActivity,"Test Log Button Click");
+                showToast(appCompatActivity,"Test SET Button Click");
                 mDeviceHandler.registerHandlerViewInputControl();
+                mDeviceHandler.set();
             }
         });
     }

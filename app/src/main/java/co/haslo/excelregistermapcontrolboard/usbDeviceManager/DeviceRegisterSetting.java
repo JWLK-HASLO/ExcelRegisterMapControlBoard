@@ -80,7 +80,7 @@ public class DeviceRegisterSetting {
 
     public static void reset(DeviceCommunicator device)
     {
-        String[] sendStringArray =  {"80090000","98000000", "98010000"};
+        String[] sendStringArray =  {"980A0000","900C0000"};
         int[] sendIntArray = hexStringArrayToInt32bit8HexArray(sendStringArray);
         for(int ints : sendIntArray){
             Dlog.d(String.format("0x%04X", ints));
@@ -94,10 +94,25 @@ public class DeviceRegisterSetting {
 
     }
 
+    public static void set(DeviceCommunicator device)
+    {
+        String[] sendStringArray =  {"98000000", "98020000", "9801007F", "980B5DBF", "980C0001", "980D007F", "980E003F", "980F0040", "981001FF"};
+        int[] sendIntArray = hexStringArrayToInt32bit8HexArray(sendStringArray);
+        for(int ints : sendIntArray){
+            Dlog.d(String.format("0x%04X", ints));
+        }
+        try {
+            device.DataTransferBulkWrite(sendStringArray);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Dlog.e(e.toString());
+        }
+
+    }
 
     public static void run(DeviceCommunicator device)
     {                               /*98000003,980A0001*/
-        String[] sendStringArray =  {"98000003"};
+        String[] sendStringArray =  {"980A0001"};
         int[] sendIntArray = hexStringArrayToInt32bit8HexArray(sendStringArray);
         for(int ints : sendIntArray) {
             Dlog.d(String.format("0x%04X", ints));

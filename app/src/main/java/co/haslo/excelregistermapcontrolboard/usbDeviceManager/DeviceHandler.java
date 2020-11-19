@@ -159,6 +159,16 @@ public class DeviceHandler extends Handler {
         }
     }
 
+    public void set() {
+        Dlog.i("Set Data");
+        if(mDeviceCommunicator != null) {
+            //mDeviceCommunicator.DataTransferReset();
+            DeviceRegisterSetting.set(mDeviceCommunicator);
+        } else {
+            deviceConnectionError();
+        }
+    }
+
     public void run() {
         Dlog.i("Run Data");
         if(mDeviceCommunicator != null) {
@@ -274,34 +284,56 @@ public class DeviceHandler extends Handler {
             byte Data00 = bufferArray[i + 0];
             byte[] DataArray = {Data03,Data02,Data01,Data00};
 
-            convertIntArray[counter] = byteArrayToInt(DataArray);
-//            Dlog.i(String.format("arrayCouning Number : %d / converData %d ", counter, convertIntArray[counter]));
+            //convertIntArray[counter] = byteArrayToInt(DataArray);
+            //Dlog.i(String.format("arrayCouning Number : %d / converData %d ", counter, convertIntArray[counter]));
+
+            Dlog.i(String.format("arrayCouning Number : %d / converData %s ", counter, byteArrayToHexString(DataArray)));
         }
         return convertIntArray;
     }
 
 
-//    public static int[] registerConvertImagingTEST(byte[] bufferArray) {
-//        Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
-//        int bit_width = 16;
-//        int dynamic_range = 60;
-//
-//        double maxVal = Math.pow(2, 15);
-//        for(int i = 0, counter = 0; i < bufferArray.length; i+=4, counter++) {
-//            //Dlog.d("defaultBulkCounter : " + defaultBulkCounter);
-//            byte Data03 = bufferArray[i + 3];
-//            byte Data02 = bufferArray[i + 2];
-//            byte Data01 = bufferArray[i + 1];
-//            byte Data00 = bufferArray[i + 0];
-//            byte[] DataArray = {Data03,Data02,Data01,Data00};
+    public static int[] registerConvertImagingTEST(byte[] bufferArray) {
+        Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
+
+        int[] convertIntArray = new int[bufferArray.length/4];
+        double data_i[] = new double[bufferArray.length/4];
+        double data_q[] = new double[bufferArray.length/4];
+        double convert_i[] = new double[bufferArray.length/4];
+        double convert_q[] = new double[bufferArray.length/4];
+        int bit_width = 16;
+        int dynamic_range = 50;
+
+
+        for(int i = 0, counter = 0; i < bufferArray.length; i+=4, counter++) {
+            //Dlog.d("defaultBulkCounter : " + defaultBulkCounter);
+            byte Data03 = bufferArray[i + 3];
+            byte Data02 = bufferArray[i + 2];
+            byte Data01 = bufferArray[i + 1];
+            byte Data00 = bufferArray[i + 0];
+            byte[] DataArray = {Data03,Data02,Data01,Data00};
 //            convertIntArray[counter] = byteArrayToInt(DataArray);
+
+            Dlog.d("TEST DATA " + i/4 + " / " + byteArrayToHexString(DataArray)  );
+
+
+//            if(i < 128 * 4){
+//                data_i[counter] = Math.floor(convertIntArray[counter]/Math.pow(2,16)); // I = floor(result_mj/2^16);
+//                data_q[counter]  = convertIntArray[counter] - (data_i[counter]  * Math.pow(2, 16)); // Q = result_mj-I*2^16;
 //
+//                convert_i[counter] = ( data_i[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_i[counter] - Math.pow(2, bit_width) ) : data_i[counter];
+//                convert_q[counter] = ( data_q[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_q[counter] - Math.pow(2, bit_width) ) : data_q[counter];
 //
-//        }
-//    }
+//                Dlog.d("TEST DATA " + i/4 + " : " + data_i[counter] + " / " + data_q[counter] );
+//            }
+
+
+        }
+        return convertIntArray;
+    }
 //    static public String[] convertStringArray = new String[4096*8];
     public static int[] registerConvertImaging(byte[] bufferArray) {
-        Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
+        //Dlog.i("Convert Register Buffer Size = " + bufferArray.length);
         double data_i[] = new double[bufferArray.length/4];
         double data_q[] = new double[bufferArray.length/4];
         double convert_i[] = new double[bufferArray.length/4];
@@ -325,13 +357,17 @@ public class DeviceHandler extends Handler {
             byte Data00 = bufferArray[i + 0];
             byte[] DataArray = {Data03,Data02,Data01,Data00};
             convertIntArray[counter] = byteArrayToInt(DataArray);
+
+            //Dlog.d("TEST DATA " + counter + " : " + byteArrayToInt(DataArray));
+
+
 //            convertStringArray[counter] = byteArrayToHexString(DataArray);
 
             data_i[counter] = Math.floor(convertIntArray[counter]/Math.pow(2,16)); // I = floor(result_mj/2^16);
             data_q[counter]  = convertIntArray[counter] - (data_i[counter]  * Math.pow(2, 16)); // Q = result_mj-I*2^16;
 
             convert_i[counter] = ( data_i[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_i[counter] - Math.pow(2, bit_width) ) : data_i[counter];
-            convert_q[counter] = ( data_q[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_q[counter] - Math.pow(2, bit_width) ) : data_i[counter];
+            convert_q[counter] = ( data_q[counter] >= Math.pow( 2, bit_width-1) ) ? ( data_q[counter] - Math.pow(2, bit_width) ) : data_q[counter];
 
             //convertMagArray[counter] = Math.sqrt( Math.pow(convert_i[counter] , 2) + Math.pow(convert_q[counter] , 2) );
             convertMagArray[counter] = Math.pow(convert_i[counter] , 2) + Math.pow(convert_q[counter] , 2);

@@ -2,25 +2,31 @@ package co.haslo.excelregistermapcontrolboard.usbDeviceManager;
 
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 
+import co.haslo.excelregistermapcontrolboard.FullscreenActivity;
 import co.haslo.excelregistermapcontrolboard.FullscreenImaging;
+import co.haslo.excelregistermapcontrolboard.FullscreenParameter;
 import co.haslo.excelregistermapcontrolboard.NativeProcessing.NativeWrapper;
 import co.haslo.excelregistermapcontrolboard.util.Dlog;
 
 public class DeviceDataTransfer {
-    NativeWrapper nativeApi;
+    NativeWrapper nativeApi = new NativeWrapper();
 
-    public static final int SEQUENCE_DATA_SIZE = 4096; // Byte => 1BULK = 4096 BYTE = 16384 BIT
+    public static final int SEQUENCE_DATA_SIZE = 4096; // Byte => 1BULK = 4096 Char DATA = 4096*4 = 16,384 Byte Data
     public static final int BYTE = 4;
     public static final int BUNDLE = 1;
     public static final int BULK_OF_FRAME = 8;
     public static final int FRAME_NUMBER = 1;
+    public static final int BULK_DPP_SCANLINE = 128;
 
     public static Boolean ReadBulkStartTrigger = false;
-    private static final int defaultBITDataSize = SEQUENCE_DATA_SIZE * BYTE * BUNDLE; // 16,384 BIT
-    private static final int defaultMultiFrameDataSize = defaultBITDataSize * BULK_OF_FRAME * FRAME_NUMBER; //
+    private static final int defaultBITDataSize = SEQUENCE_DATA_SIZE * BYTE * BUNDLE; // 16,384 Byte
+    private static final int defaultMultiFrameDataSize = defaultBITDataSize * BULK_OF_FRAME * FRAME_NUMBER; // 16,384 Byte * 8 = 131,072
+    private static final int defaultDopplerDataSize = BULK_DPP_SCANLINE * BYTE; // 16,384 Byte * 8 = 131,072
+
     public static int defaultBulkCounter = 0;
     public static int defaultFrameCounter = 0;
 
@@ -48,7 +54,27 @@ public class DeviceDataTransfer {
     public static byte[] bufferArray_13 = new byte[defaultBITDataSize];
 
 
+    //*/B-mode
     public static byte[] bufferArrayMulti = new byte[defaultMultiFrameDataSize];
+
+    //*/D-mode
+    public static byte[] bufferArrayDMode = new byte[defaultDopplerDataSize];
+
+    double[][] convertByteToIQArray = new double[2][128];
+    double[] convertDoubleArrayInphase_IIR = new double[128];
+    double[] convertDoubleArrayQuadrature_IIR = new double[128];
+
+    double[] convertDoubleArrayInphase_FFT_Real = new double[256];
+    double[] convertDoubleArrayInphase_FFT_Imag = new double[256];
+
+    double[] convertDoubleArrayQuadrature_FFT_Real = new double[256];
+    double[] convertDoubleArrayQuadrature_FFT_Imag = new double[256];
+
+    double[][] convertDoubleArrayInphase_FFT = new double[2][256];
+    double[][] convertDoubleArrayQuadrature_FFT = new double[2][256];
+
+    double[] resultMagnitude = new double[256];
+    int[] resultDopplerScanline = new int[256];
 
 
     private class DeviceDataTransferThread extends Thread {
@@ -60,7 +86,7 @@ public class DeviceDataTransfer {
         @SuppressLint("DefaultLocale")
         public void run(){
 
-            final byte[] readBuffer = new byte[defaultBITDataSize];
+            final byte[] readBuffer = new byte[defaultBITDataSize]; // 16,384 byte
             int readSize;
             String convertString;
             //String[] convertHexaArray = new String[SEQUENCE_SIZE];
@@ -82,45 +108,98 @@ public class DeviceDataTransfer {
                 if(readSize <= -1) {
                     continue;
                 } else {
+                    int arrayStartCounter = (defaultBulkCounter - 1);
 
-//                    Dlog.i(String.format("DeviceDataTransferThread : readSize [%d] / BulkCounter [%d} / FrameCounter [%d]", readSize, defaultBulkCounter, defaultFrameCounter));
+                    if(FullscreenParameter.MOD_NUMBER == 1) {
+                        //*/ B-mode Setting
+                        Dlog.i(String.format("DeviceDataTransferThread : readSize [%d] / BulkCounter [%d} / FrameCounter [%d]", readSize, defaultBulkCounter, defaultFrameCounter));
+                        if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
+                            System.arraycopy(readBuffer, 0, bufferArrayMulti, arrayStartCounter*readSize, defaultBITDataSize);
+                            //readBuffer  = 16,384
+                        }
 
+                        if(defaultBulkCounter % BULK_OF_FRAME == 0){
+                            //Dlog.i(String.format("DeviceDataTransferThread : FrameCounter [%d]", defaultFrameCounter));
+
+                            defaultFrameCounter++;
+                            defaultBulkCounter = 0;
+    //                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertINT(bufferArrayMulti);
+                            //FullscreenImaging.arrayIntData = DeviceHandler.registerConvertImaging(bufferArrayMulti);
+                            //DeviceHandler.registerConvertImagingTEST(bufferArrayMulti);
+
+                            //Add: C++ Native Code
+                            //FullscreenImaging.arrayIntData = nativeApi.nativeImaging(bufferArrayMulti);
+                        }
+                        defaultBulkCounter++;
+                        //*/
+                    } else if(FullscreenParameter.MOD_NUMBER == 2) {
+                        //*/ D-mode Setting
+                        //Dlog.i(String.format("DeviceDataTransferThread : readSize [%d] / BulkCounter [%d}", readSize, defaultBulkCounter));
+
+
+                        if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
+                            System.arraycopy(readBuffer,0, bufferArrayDMode, 0, defaultDopplerDataSize);
+                            //DeviceHandler.registerConvertINT(bufferArrayDMode);
+                            convertByteToIQArray = nativeApi.nativeConvertIQ(bufferArrayDMode);
+
+                            //*/IIR Filter
+                            convertDoubleArrayInphase_IIR = nativeApi.nativeIIRFilter(convertByteToIQArray[0]);
+                            System.arraycopy(convertDoubleArrayInphase_IIR, 0, convertDoubleArrayInphase_FFT_Real, 0, convertDoubleArrayInphase_IIR.length);
+                            convertDoubleArrayQuadrature_IIR = nativeApi.nativeIIRFilter(convertByteToIQArray[1]);
+                            System.arraycopy(convertDoubleArrayQuadrature_IIR, 0, convertDoubleArrayQuadrature_FFT_Real, 0, convertDoubleArrayQuadrature_IIR.length);
+                            //*/
+
+                            /*/ TEST IIR DATA
+                            convertDoubleArrayInphase_IIR =  nativeApi.nativeIIRFilter(FullscreenActivity.convertDoubleArrayInphase);
+                            System.arraycopy(convertDoubleArrayInphase_IIR, 0, convertDoubleArrayInphase_FFT_Real, 0, convertDoubleArrayInphase_IIR.length);
+                            convertDoubleArrayQuadrature_IIR =  nativeApi.nativeIIRFilter(FullscreenActivity.convertDoubleArrayQuadrature);
+                            System.arraycopy(convertDoubleArrayQuadrature_IIR, 0, convertDoubleArrayQuadrature_FFT_Real, 0, convertDoubleArrayQuadrature_IIR.length);
+                            //*/
+
+                            //FFT & FFTShift
+                            convertDoubleArrayInphase_FFT = nativeApi.nativeFFT(-1,8, convertDoubleArrayInphase_FFT_Real, convertDoubleArrayInphase_FFT_Imag);
+                            convertDoubleArrayQuadrature_FFT = nativeApi.nativeFFT(-1,8, convertDoubleArrayQuadrature_FFT_Real, convertDoubleArrayQuadrature_FFT_Imag);
+
+                            //Magnitude
+                            resultMagnitude = nativeApi.nativeFFTMagni(convertDoubleArrayInphase_FFT[0], convertDoubleArrayInphase_FFT[1], convertDoubleArrayQuadrature_FFT[0], convertDoubleArrayQuadrature_FFT[1], 256);
+                            resultMagnitude = nativeApi.nativeMagShift(resultMagnitude,256);
+
+                            resultDopplerScanline = nativeApi.nativeDopplerImaging(resultMagnitude);
+                            //FullscreenImaging.arrayDmodeSaveData[defaultBulkCounter%128] = nativeApi.nativeDopplerImaging(resultMagnitude);
+
+
+                            if(defaultBulkCounter < 125){
+                                for(int k=0; k < 256; k++) {
+                                    Dlog.i(String.format("CONVERT / %d / %d / %d", defaultBulkCounter, k, resultDopplerScanline[k]));
+                                }
+                            }
+
+                        }
+
+                        defaultBulkCounter++;
+                        //*/
+                    }
+
+                    /* Sample Code /
                     int arrayStartCounter = (defaultBulkCounter - 1);
                     if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
+                        Dlog.i(String.format("Trigger data : %d", arrayStartCounter*readSize));
                         System.arraycopy(readBuffer,0, bufferArrayMulti, arrayStartCounter*readSize, defaultBITDataSize);
+                        Dlog.i(String.format("End data : %d", bufferArrayMulti.length));
                     }
 
                     if(defaultBulkCounter % BULK_OF_FRAME == 0){
-                        Dlog.i(String.format("DeviceDataTransferThread : FrameCounter [%d]", defaultFrameCounter));
-
                         defaultFrameCounter++;
-                        defaultBulkCounter = 0;
-//                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertINT(bufferArrayMulti);
-                        //FullscreenImaging.arrayIntData = DeviceHandler.registerConvertImaging(bufferArrayMulti);
-                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvertImaging(bufferArrayMulti);
+                        //defaultBulkCounter = 0;
+                    }
+
+                    if(defaultFrameCounter > FRAME_NUMBER ){
+                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
+                        Dlog.i(String.format("registerConvert : %d", FullscreenImaging.arrayIntData.length));
+                        defaultFrameCounter = 1;
                     }
                     defaultBulkCounter++;
-
-
-
-//                    int arrayStartCounter = (defaultBulkCounter - 1);
-//                    if(ReadBulkStartTrigger && arrayStartCounter!= -1) {
-//                        Dlog.i(String.format("Trigger data : %d", arrayStartCounter*readSize));
-//                        System.arraycopy(readBuffer,0, bufferArrayMulti, arrayStartCounter*readSize, defaultBITDataSize);
-//                        Dlog.i(String.format("End data : %d", bufferArrayMulti.length));
-//                    }
-//
-//                    if(defaultBulkCounter % BULK_OF_FRAME == 0){
-//                        defaultFrameCounter++;
-////                        defaultBulkCounter = 0;
-//                    }
-//
-//                    if(defaultFrameCounter > FRAME_NUMBER ){
-//                        FullscreenImaging.arrayIntData = DeviceHandler.registerConvert(bufferArrayMulti);
-//                        Dlog.i(String.format("registerConvert : %d", FullscreenImaging.arrayIntData.length));
-//                        defaultFrameCounter = 1;
-//                    }
-//                    defaultBulkCounter++;
+                    //*/
                 }
 
             }
